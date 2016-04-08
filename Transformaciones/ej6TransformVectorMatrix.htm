@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+<script type="text/javascript">
+
+var canvas;
+var ctx;
+
+var k = 15;
+var OX = 10;
+var OY = 10;
+var DX = 25;
+var DY = 25;
+
+var Pt = [];
+Pt[0] = {y:0 ,x:0 , r:68 ,g:59 , b:58};
+Pt[1] = {y:0 ,x:1 , r:47 ,g:40 , b:40};
+Pt[2] = {y:0 ,x:2 , r:40 ,g:31 , b:31};
+
+function Vector2(x, y) {
+    this.x = x;
+    this.y = y;
+};
+
+function Matrix2(a, b,c,d) {
+    this.m00 = a;
+    this.m01 = b;
+    this.m10 = c;
+    this.m11 = d;
+};
+
+function vec2_transform(m, v) {
+    return new Vector2(m.m00 * v.x + m.m01 * v.y, m.m10 * v.x + m.m11 * v.y);
+};
+
+var T = new Matrix2(0.5,1,-1,0.2);
+
+function Render() 
+{
+	if (canvas.getContext)
+	{
+		// borro la pantalla
+		ctx.fillStyle = 'rgba(0,0,0,255)';
+		ctx.fillRect(0,0,2000,2000);
+
+		// dibuja los puntos 
+		for(i=0;i<Pt.length;i++)
+		{
+			var p = new Vector2(Pt[i].x , Pt[i].y );
+			ctx.fillStyle = 'rgba('+Pt[i].r+','+Pt[i].g+','+Pt[i].b+',255)';
+			ctx.fillRect(OX + p.x *k , OY + (DY - p.y) *k , k,k);
+		}
+
+		// dibuja los puntos transformados
+		for(i=0;i<Pt.length;i++)
+		{
+			ctx.fillStyle = 'rgba('+Pt[i].r+','+Pt[i].g+','+Pt[i].b+',255)';
+			var p = new Vector2(Pt[i].x , Pt[i].y );
+			var Tp =  vec2_transform(T, p);
+			ctx.fillRect(2*OX + (DX + Tp.x) *k , OY + (DY - Tp.y) *k , k,k);
+		}
+	}
+}
+
+function main()
+{   
+	canvas = document.getElementById('mycanvas');
+	ctx = canvas.getContext('2d');
+	Render();
+} 
+
+
+</script>
+</head>
+<body onload="main();">
+	<p>Transformacion de vector aplicando una matriz.</p>
+	<canvas id="mycanvas" width="1000" height="700"></canvas>
+</body>
+</html>
+ 

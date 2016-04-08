@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+<script type="text/javascript">
+
+var canvas;
+var ctx;
+
+var k = 5;
+var OX = 50;
+var OY = 50;
+var DX = 100;
+var DY = 100;
+
+var Pt = [];
+Pt[0] = {y:0 ,x:0 , r:255 ,g:0 , b:255};
+Pt[1] = {y:0 ,x:5 , r:255 ,g:255 , b:0};
+Pt[2] = {y:5 ,x:5 , r:0 ,g:255 , b:255};
+
+function Render() 
+{
+	if (canvas.getContext)
+	{
+		// borro la pantalla
+		ctx.fillStyle = 'rgba(0,0,0,255)';
+		ctx.fillRect(0,0,2000,2000);
+
+		// dibuja los puntos 
+		for(i=0;i<Pt.length;i++)
+		{
+			var X = Pt[i].x ;
+			var Y = Pt[i].y ;
+			ctx.fillStyle = 'rgba('+Pt[i].r+','+Pt[i].g+','+Pt[i].b+',255)';
+			ctx.fillRect(OX + Pt[i].x *k , OY + (DY - Pt[i].y) *k , k,k);
+		}
+	}
+}
+
+function main()
+{   
+	canvas = document.getElementById('mycanvas');
+	ctx = canvas.getContext('2d');
+	Render();
+} 
+
+
+
+
+</script>
+</head>
+<body onload="main();">
+	Ejemplo basico canvas define tres puntos RGBA
+	<canvas id="mycanvas" width="1000" height="700"></canvas>
+</body>
+</html>
+ 

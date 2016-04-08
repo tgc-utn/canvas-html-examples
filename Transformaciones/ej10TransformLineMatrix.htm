@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+<script type="text/javascript">
+
+var canvas;
+var ctx;
+
+var k = 2;
+var OX = 50;
+var OY = 50;
+var DX = 100;
+var DY = 100;
+
+function Vector2(x, y) {
+    this.x = x;
+    this.y = y;
+};
+
+function Matrix2(a, b,c,d) {
+    this.m00 = a;
+    this.m01 = b;
+    this.m10 = c;
+    this.m11 = d;
+};
+
+function vec2_transform(m, v) {
+    return new Vector2(m.m00 * v.x + m.m01 * v.y, m.m10 * v.x + m.m11 * v.y);
+};
+
+var T = new Matrix2(1.5,1,-2,-0.2);
+
+function Render() 
+{
+	if (canvas.getContext)
+	{
+		// borro la pantalla
+		ctx.fillStyle = 'rgba(0,0,0,255)';
+		ctx.fillRect(0,0,2000,2000);
+
+		// dibuja  sin transformar 
+		ctx.lineWidth = 2;
+		ctx.strokeStyle = 'rgba(120,255,120,255)';
+		ctx.beginPath();
+		for(i=0;i<=DX;i+=10)
+		{
+			var p0 = new Vector2(i,0);
+			var p1 = new Vector2(i,DY);
+			ctx.moveTo(OX + p0.x *k , OY + (DY - p0.y) *k);
+			ctx.lineTo(OX + p1.x *k , OY + (DY - p1.y) *k);
+		}
+		for(i=0;i<=DY;i+=10)
+		{
+			var p0 = new Vector2(0,i);
+			var p1 = new Vector2(DX,i);
+			ctx.moveTo(OX + p0.x *k , OY + (DY - p0.y) *k);
+			ctx.lineTo(OX + p1.x *k , OY + (DY - p1.y) *k);
+		}
+		ctx.stroke();
+		
+		// dibuja  transformados
+		ctx.lineWidth = 3;
+		ctx.strokeStyle = 'rgba(255,120,120,255)';
+		ctx.beginPath();
+		for(i=0;i<=DX;i+=10)
+		{
+			var p0 = new Vector2(i,0);
+			var p1 = new Vector2(i,DY);
+			p0 =  vec2_transform(T, p0);
+			p1 =  vec2_transform(T, p1);
+			ctx.moveTo(2*OX + (DX+ p0.x) *k , OY + (DY - p0.y) *k);
+			ctx.lineTo(2*OX + (DX+ p1.x) *k , OY + (DY - p1.y) *k);
+		}
+		for(i=0;i<=DY;i+=10)
+		{
+			var p0 = new Vector2(0,i);
+			var p1 = new Vector2(DX,i);
+			p0 =  vec2_transform(T, p0);
+			p1 =  vec2_transform(T, p1);
+			ctx.moveTo(2*OX + (DX+ p0.x) *k , OY + (DY - p0.y) *k);
+			ctx.lineTo(2*OX + (DX+ p1.x) *k , OY + (DY - p1.y) *k);
+		}
+		ctx.stroke();
+		
+	}
+}
+
+function main()
+{   
+	canvas = document.getElementById('mycanvas');
+	ctx = canvas.getContext('2d');
+	Render();
+} 
+
+</script>
+</head>
+<body onload="main();">
+	<p>Transformaciones con matriz de transoformacion sobre lineas</p>
+	<canvas id="mycanvas" width="1000" height="700"></canvas>
+</body>
+</html>
+ 
