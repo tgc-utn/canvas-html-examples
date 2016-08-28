@@ -100,6 +100,26 @@ function Line3d(x0,y0,z0,x1,y1,z1)
 
 }
 
+// Dibuja un Bosque
+function draw() 
+{
+	canvas = document.getElementById('mycanvas');
+	ctx = canvas.getContext('2d');
+	if (canvas.getContext)
+	{
+		tras_y = -3;
+		for(var j = 0 ; j < 4;++j)
+		{
+			tras_z = 1+j*6;
+			for(var i = 0 ; i < 5;++i)
+			{
+				tras_x = -10 + i*4 + j*3;
+				palmera();
+			}
+		}
+	}
+}
+
 
 // Dibuja una Palmera
 function palmera() 
@@ -719,27 +739,6 @@ DrawTri(4.04525,3.34505,3.15451,4.04525,2.70497,3.00737,4.04525,2.89104,2.94505)
 DrawTri(4.04525,2.88584,2.61552,4.04525,2.8424,2.81578,4.04525,2.62347,2.79164);
 DrawTri(4.04525,2.88584,2.61552,4.04525,3.22527,2.38947,4.04525,2.8424,2.81578);
 DrawTri(4.04525,3.22527,2.38947,4.04525,2.88584,2.61552,4.04525,3.12856,2.30261);
-}
-
-
-// Dibuja un Bosque
-function draw() 
-{
-	canvas = document.getElementById('mycanvas');
-	ctx = canvas.getContext('2d');
-	if (canvas.getContext)
-	{
-		tras_y = -3;
-		for(var j = 0 ; j < 4;++j)
-		{
-			tras_z = 1+j*6;
-			for(var i = 0 ; i < 5;++i)
-			{
-				tras_x = -10 + i*4 + j*3;
-				palmera();
-			}
-		}
-	}
 }
 
 </script>

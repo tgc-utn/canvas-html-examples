@@ -96,6 +96,95 @@ function Line3d(x0,y0,z0,x1,y1,z1)
 
 }
 
+var t = 0;
+
+// Dibuja un Bosque
+function draw() 
+{
+	if (canvas.getContext)
+	{
+		ctx.fillStyle = 'rgba(255,255,255,1)';
+		ctx.fillRect(0,0,1000,800);
+
+		t+= 0.1;
+		
+		// Bounding Box de la palmera
+		var min_x = 1.184250;
+		var min_y = -0.124824;
+		var min_z = 1.17678;
+		var max_x = 6.033;
+		var max_y = 5.23582;
+		var max_z = 4.96582;
+
+		// Quiero mirar el centro de la palmera
+		// LA = Look At = Objetivo = a donde apunta la camara
+		var LAx = (min_x + max_x) / 2;
+		var LAy = (min_y + max_y) / 2;
+		var LAz = (min_z + max_z) / 2;
+
+		// Calculo el punto de vista = la posicion del observador (camara u ojo) 
+		// girando alrededor del centro de la palmera
+		var LFx = LAx + Math.sin(t) * 2;
+		var LFy = LAy ;
+		var LFz = LAz + Math.cos(t) * 2;
+
+		// Calculo la transformacion para pasar todo al espacio del camara
+		// La Z es la direccion hacia la camara,
+		// La Y es la direccion hacia arriba
+		// La X es la direccion hacia la derecha.
+
+		// Eje z = normalizado( LA - LF)
+		var Zx = LAx - LFx;
+		var Zy = LAy - LFy;
+		var Zz = LAz - LFz;
+		var len = Math.sqrt(Zx*Zx + Zy*Zy + Zz*Zz);
+		Zx /= len;
+		Zy /= len;
+		Zz /= len;
+
+		// Eje x = normalizado ( cross ( Up = (0,1,0) , Eje z))
+		var Xx = Zz;
+		var Xy = 0;
+		var Xz = -Zx;
+		len = Math.sqrt(Xx*Xx + Xy*Xy + Xz*Xz);
+		Xx /= len;
+		Xy /= len;
+		Xz /= len;
+
+		// cross ( Eje z , Eje x)
+		var Yx = Zy*Xz-Zz*Xy;
+		var Yy = Zz*Xx-Zx*Xz;
+		var Yz = Zx*Xy-Zy*Xx;
+
+		// Ya tengo las 3 direcciones, son una Base Ortonormal de R3 
+		// la matriz creada asi es la matriz de cambio de bases. 
+
+		
+		// Armo la matriz de View: Parte de Rotacion
+		m11 = Xx;		m12 = Yx;		m13 = Zx;	
+		m21 = Xy;		m22 = Yy;		m23 = Zy;
+		m31 = Xz;		m32 = Yz;		m33 = Zz;
+
+		// Parte de Translacion
+		// -dot (x , LA)
+		tras_x = - (Xx*LAx + Xy*LAy + Xz*LAz);
+		// -dot (y , LA)
+		tras_y = - (Yx*LAx + Yy*LAy + Yz*LAz);
+		// -dot (z , LA)
+		tras_z = - (Zx*LAx + Zy*LAy + Zz*LAz);
+
+		palmera();
+	}
+}
+
+function animate()
+{   
+	canvas = document.getElementById('mycanvas');
+	ctx = canvas.getContext('2d');
+	setInterval(draw, 100);
+} 
+
+
 
 // Dibuja una Palmera
 function palmera() 
@@ -716,94 +805,6 @@ DrawTri(4.04525,2.88584,2.61552,4.04525,2.8424,2.81578,4.04525,2.62347,2.79164);
 DrawTri(4.04525,2.88584,2.61552,4.04525,3.22527,2.38947,4.04525,2.8424,2.81578);
 DrawTri(4.04525,3.22527,2.38947,4.04525,2.88584,2.61552,4.04525,3.12856,2.30261);
 }
-
-var t = 0;
-
-// Dibuja un Bosque
-function draw() 
-{
-	if (canvas.getContext)
-	{
-		ctx.fillStyle = 'rgba(255,255,255,1)';
-		ctx.fillRect(0,0,1000,800);
-
-		t+= 0.1;
-		
-		// Bounding Box de la palmera
-		var min_x = 1.184250;
-		var min_y = -0.124824;
-		var min_z = 1.17678;
-		var max_x = 6.033;
-		var max_y = 5.23582;
-		var max_z = 4.96582;
-
-		// Quiero mirar el centro de la palmera
-		// LA = Look At = Objetivo = a donde apunta la camara
-		var LAx = (min_x + max_x) / 2;
-		var LAy = (min_y + max_y) / 2;
-		var LAz = (min_z + max_z) / 2;
-
-		// Calculo el punto de vista = la posicion del observador (camara u ojo) 
-		// girando alrededor del centro de la palmera
-		var LFx = LAx + Math.sin(t) * 2;
-		var LFy = LAy ;
-		var LFz = LAz + Math.cos(t) * 2;
-
-		// Calculo la transformacion para pasar todo al espacio del camara
-		// La Z es la direccion hacia la camara,
-		// La Y es la direccion hacia arriba
-		// La X es la direccion hacia la derecha.
-
-		// Eje z = normalizado( LA - LF)
-		var Zx = LAx - LFx;
-		var Zy = LAy - LFy;
-		var Zz = LAz - LFz;
-		var len = Math.sqrt(Zx*Zx + Zy*Zy + Zz*Zz);
-		Zx /= len;
-		Zy /= len;
-		Zz /= len;
-
-		// Eje x = normalizado ( cross ( Up = (0,1,0) , Eje z))
-		var Xx = Zz;
-		var Xy = 0;
-		var Xz = -Zx;
-		len = Math.sqrt(Xx*Xx + Xy*Xy + Xz*Xz);
-		Xx /= len;
-		Xy /= len;
-		Xz /= len;
-
-		// cross ( Eje z , Eje x)
-		var Yx = Zy*Xz-Zz*Xy;
-		var Yy = Zz*Xx-Zx*Xz;
-		var Yz = Zx*Xy-Zy*Xx;
-
-		// Ya tengo las 3 direcciones, son una Base Ortonormal de R3 
-		// la matriz creada asi es la matriz de cambio de bases. 
-
-		
-		// Armo la matriz de View: Parte de Rotacion
-		m11 = Xx;		m12 = Yx;		m13 = Zx;	
-		m21 = Xy;		m22 = Yy;		m23 = Zy;
-		m31 = Xz;		m32 = Yz;		m33 = Zz;
-
-		// Parte de Translacion
-		// -dot (x , LA)
-		tras_x = - (Xx*LAx + Xy*LAy + Xz*LAz);
-		// -dot (y , LA)
-		tras_y = - (Yx*LAx + Yy*LAy + Yz*LAz);
-		// -dot (z , LA)
-		tras_z = - (Zx*LAx + Zy*LAy + Zz*LAz);
-
-		palmera();
-	}
-}
-
-function animate()
-{   
-	canvas = document.getElementById('mycanvas');
-	ctx = canvas.getContext('2d');
-	setInterval(draw, 100);
-} 
 
 </script>
 </head>
